@@ -1,16 +1,20 @@
-#include <cstdio>
-#include <cstdlib>
-#if defined(WIN32)
-//#  pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
-#  pragma comment(lib, "glew32.lib")
-#  include "glew.h"
-#  include "glut.h"
+﻿//
+// main.cpp
+//
+#if defined(_WIN32)
+#  define _USE_MATH_DEFINES
+#  define _CRT_SECURE_NO_WARNINGS
+#  include <GL/glew.h>
+#  include <GL/glut.h>
 #elif defined(__APPLE__) || defined(MACOSX)
+#  define GL_SILENCE_DEPRECATION
 #  include <GLUT/glut.h>
 #else
 #  define GL_GLEXT_PROTOTYPES
 #  include <GL/glut.h>
 #endif
+#include <cstdio>
+#include <cstdlib>
 
 /*
 ** 変換行列
@@ -87,7 +91,7 @@ static void drawBone(const Bone *b, float *bottom, float *top, float *blend)
   initial.loadIdentity();
   animated.loadIdentity();
 
-  /* 現在の視野変換行列をかけておく */
+  /* 現在のビュー変換行列をかけておく */
   do {
     Matrix temp;
     temp.loadTranslate(b->getPosition());
@@ -145,7 +149,7 @@ static void display(void)
   */
   glUseProgram(pProgram);
   
-  /* 点のモデリング変換／視野変換／投影変換 */
+  /* 点のモデリング変換／ビュー変換／投影変換 */
   Matrix modelViewMatrix = viewMatrix;
   modelViewMatrix.translate(0.0f, 0.0f, -1.5f);
   modelViewMatrix.scale(0.3f, 0.3f, 3.0f);
@@ -307,7 +311,7 @@ static GLuint loadShader(const char *vertSource, const char *fragSource)
 */
 static void init(void)
 {
-#if defined(WIN32)
+#if defined(_WIN32)
   /* GLEW の初期化 */
   GLenum err = glewInit();
   if (err != GLEW_OK) {
@@ -330,7 +334,7 @@ static void init(void)
   boneTopLocation = glGetUniformLocation(pProgram, "boneTop");
   blendMatrixLocation = glGetUniformLocation(pProgram, "blendMatrix");
   
-  /* 視野変換行列を求める */
+  /* ビュー変換行列を求める */
   viewMatrix.loadIdentity();
   viewMatrix.lookat(0.0f, -7.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
   

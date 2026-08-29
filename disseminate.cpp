@@ -1,17 +1,23 @@
+﻿//
+// disseminate.cpp
+//
 /*
-** 空間中に点を散布する
+** 点を空間に散布する
 */
-#include <cstdlib>
-#include <cmath>
-#if defined(WIN32)
-#  include "glew.h"
-#  include <GL/gl.h>
+#if defined(_WIN32)
+#  define _USE_MATH_DEFINES
+#  define _CRT_SECURE_NO_WARNINGS
+#  include <GL/glew.h>
+#  include <GL/glut.h>
 #elif defined(__APPLE__) || defined(MACOSX)
-#  include <OpenGL/gl.h>
+#  define GL_SILENCE_DEPRECATION
+#  include <GLUT/glut.h>
 #else
 #  define GL_GLEXT_PROTOTYPES
-#  include <GL/gl.h>
+#  include <GL/glut.h>
 #endif
+#include <cstdlib>
+#include <cmath>
 
 #include "disseminate.h"
 
@@ -34,10 +40,10 @@ GLuint disseminate(int points, const GLuint *buffer)
 
   /* 頂点の位置 */
   for (int i = 0; i < points; ++i) {
-    float r = sqrt(2.0f * (float)rand() / ((float)RAND_MAX + 1.0f));
+    float r = sqrtf((float)rand() / ((float)RAND_MAX + 1.0f));
     float t = 6.283185f * (float)rand() / ((float)RAND_MAX + 1.0f);
-    (*point)[0] = r * cos(t);
-    (*point)[1] = r * sin(t);
+    (*point)[0] = r * cosf(t);
+    (*point)[1] = r * sinf(t);
     (*point)[2] = (float)rand() / ((float)RAND_MAX + 1.0f);
     ++point;
   }
